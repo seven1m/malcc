@@ -1,26 +1,30 @@
 OS:=$(shell uname)
 CC=gcc
 CFLAGS=-Itinycc -Wall -Wextra -Werror -g
-LDLIBS=-ledit
+LDLIBS=-ledit -lgc -lpcre
 
-ALL_STEPS=step0_repl
-CURRENT_STEP_NUMBER=0
+ALL_STEPS=step0_repl step1_read_print
+CURRENT_STEP_NUMBER=1
 
 .PHONY: all clean test test-current cloc docker-build
 
 all: $(ALL_STEPS)
 
 step0_repl: step0_repl.o
+step1_read_print: step1_read_print.o hashmap.o reader.o printer.o types.o util.o
 
 clean:
 	rm -f $(ALL_STEPS) *.o
 
-test: test0
+test: test0 test1
 
 RUN_TEST_CMD=mal/runtest.py --rundir mal/tests --hard --deferrable --optional --start-timeout 1 --test-timeout 1
 
 test0: all
 	$(RUN_TEST_CMD) step0_repl.mal ../../step0_repl
+
+test1: all
+	$(RUN_TEST_CMD) step1_read_print.mal ../../step1_read_print
 
 test-current: test$(CURRENT_STEP_NUMBER)
 
