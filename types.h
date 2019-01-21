@@ -193,4 +193,10 @@ int is_equal(MalType *arg1, MalType *arg2);
 int hashmap_is_equal(MalType *arg1, MalType *arg2);
 int list_or_vector_is_equal(MalType *arg1, MalType *arg2);
 
+struct codegen {
+  MalType *top;
+  MalType *decl;
+  MalType *body;
+};
+
 #endif
