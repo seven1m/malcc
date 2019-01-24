@@ -3,8 +3,8 @@ CC=gcc
 CFLAGS=-Itinycc -Wall -Wextra -Werror -g
 LDLIBS=-ledit -lgc -lpcre -ldl
 
-ALL_STEPS=step0_repl step1_read_print step2_eval step3_env
-CURRENT_STEP_NUMBER=3
+ALL_STEPS=step0_repl step1_read_print step2_eval step3_env step4_if_fn_do
+CURRENT_STEP_NUMBER=4
 
 .PHONY: all clean test test-current cloc docker-build
 
@@ -14,6 +14,7 @@ step0_repl: step0_repl.o
 step1_read_print: step1_read_print.o hashmap.o reader.o printer.o types.o util.o
 step2_eval: step2_eval.o hashmap.o reader.o printer.o types.o util.o tinycc/libtcc.a
 step3_env: step3_env.o env.o hashmap.o reader.o printer.o types.o util.o tinycc/libtcc.a
+step4_if_fn_do: step4_if_fn_do.o core.o env.o hashmap.o reader.o printer.o types.o util.o tinycc/libtcc.a
 
 tinycc/libtcc.a:
 	cd tinycc && ./configure && make
@@ -22,7 +23,7 @@ clean:
 	rm -f $(ALL_STEPS) *.o
 	cd tinycc && make clean
 
-test: test0 test1 test2 test3
+test: test0 test1 test2 test3 test4
 
 RUN_TEST_CMD=mal/runtest.py --rundir mal/tests --hard --deferrable --optional --start-timeout 1 --test-timeout 1
 
@@ -37,6 +38,9 @@ test2: all
 
 test3: all
 	$(RUN_TEST_CMD) step3_env.mal ../../step3_env
+
+test4: all
+	$(RUN_TEST_CMD) step4_if_fn_do.mal ../../step4_if_fn_do
 
 test-current: test$(CURRENT_STEP_NUMBER)
 
