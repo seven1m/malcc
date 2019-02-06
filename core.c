@@ -40,6 +40,8 @@ struct hashmap* core_ns() {
   hashmap_put(ns, "deref", core_deref);
   hashmap_put(ns, "reset!", core_reset);
   hashmap_put(ns, "swap!", core_swap);
+  hashmap_put(ns, "cons", core_cons);
+  hashmap_put(ns, "concat", core_concat);
   return ns;
 }
 
@@ -286,4 +288,34 @@ MalType* core_swap(MalEnv *env, size_t argc, MalType **args) {
   }
   atom->atom_val = trampoline(mal_continuation(lambda->fn, lambda->env, argc - 1, swap_args));
   return atom->atom_val;
+}
+
+MalType* core_cons(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to cons");
+  MalType *new_item = args[0];
+  if (is_vector(args[1])) {
+    MalType *vec = args[1];
+    MalType *new_vec = mal_vector();
+    mal_vector_push(new_vec, new_item);
+    for (size_t i=0; i<mal_vector_len(vec); i++) {
+      mal_vector_push(new_vec, vec->vec[i]);
+    }
+    return mal_vector_to_list(new_vec);
+  } else {
+    return mal_cons(new_item, args[1]);
+  }
+}
+
+MalType* core_concat(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  MalType *final = mal_vector(), *item;
+  struct list_or_vector_iter *iter;
+  for (size_t i=0; i<argc; i++) {
+    for (iter = list_or_vector_iter(args[i]); iter; iter = list_or_vector_iter_next(iter)) {
+      item = list_or_vector_iter_get_obj(iter);
+      mal_vector_push(final, item);
+    }
+  }
+  return mal_vector_to_list(final);
 }

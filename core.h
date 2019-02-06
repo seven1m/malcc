@@ -31,5 +31,7 @@ MalType* core_is_atom(MalEnv *env, size_t argc, MalType **args);
 MalType* core_deref(MalEnv *env, size_t argc, MalType **args);
 MalType* core_reset(MalEnv *env, size_t argc, MalType **args);
 MalType* core_swap(MalEnv *env, size_t argc, MalType **args);
+MalType* core_cons(MalEnv *env, size_t argc, MalType **args);
+MalType* core_concat(MalEnv *env, size_t argc, MalType **args);
 
 #endif
