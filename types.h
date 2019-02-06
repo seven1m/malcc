@@ -199,4 +199,6 @@ struct codegen {
   MalType *body;
 };
 
+MalType* trampoline(MalType *result);
+
 #endif

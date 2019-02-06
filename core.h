@@ -24,5 +24,12 @@ MalType* core_is_lte(MalEnv *env, size_t argc, MalType **args);
 MalType* core_pr_str(MalEnv *env, size_t argc, MalType **args);
 MalType* core_str(MalEnv *env, size_t argc, MalType **args);
 MalType* core_println(MalEnv *env, size_t argc, MalType **args);
+MalType* core_read_string(MalEnv *env, size_t argc, MalType **args);
+MalType* core_slurp(MalEnv *env, size_t argc, MalType **args);
+MalType* core_atom(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_atom(MalEnv *env, size_t argc, MalType **args);
+MalType* core_deref(MalEnv *env, size_t argc, MalType **args);
+MalType* core_reset(MalEnv *env, size_t argc, MalType **args);
+MalType* core_swap(MalEnv *env, size_t argc, MalType **args);
 
 #endif

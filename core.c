@@ -33,6 +33,13 @@ struct hashmap* core_ns() {
   hashmap_put(ns, "pr-str", core_pr_str);
   hashmap_put(ns, "str", core_str);
   hashmap_put(ns, "println", core_println);
+  hashmap_put(ns, "read-string", core_read_string);
+  hashmap_put(ns, "slurp", core_slurp);
+  hashmap_put(ns, "atom", core_atom);
+  hashmap_put(ns, "atom?", core_is_atom);
+  hashmap_put(ns, "deref", core_deref);
+  hashmap_put(ns, "reset!", core_reset);
+  hashmap_put(ns, "swap!", core_swap);
   return ns;
 }
 
@@ -206,4 +213,77 @@ MalType* core_println(MalEnv *env, size_t argc, MalType **args) {
   }
   printf("%s\n", out->str);
   return mal_nil();
+}
+
+MalType* core_read_string(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to read-string");
+  MalType *code = args[0];
+  mal_assert(is_string(code), "read-string expects a string argument");
+  return read_str(code->str);
+}
+
+MalType* core_slurp(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to slurp");
+  MalType *filename = args[0];
+  mal_assert(is_string(filename), "slurp expects a string argument");
+  MalType *content = mal_string("");
+  FILE *fp = fopen(filename->str, "r");
+  if(!fp) {
+    printf("Error opening file %s\n", filename->str);
+    exit(1);
+  }
+  char buffer[100];
+  while (fgets(buffer, 100, fp)) {
+    mal_string_append(content, buffer);
+  }
+  fclose(fp);
+  return mal_string(content->str);
+}
+
+MalType* core_atom(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to atom");
+  return mal_atom(args[0]);
+}
+
+MalType* core_is_atom(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to atom?");
+  return is_atom(args[0]) ? mal_true() : mal_false();
+}
+
+MalType* core_deref(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to deref");
+  MalType *val = args[0];
+  mal_assert(is_atom(val), "deref expects an atom argument");
+  return val->atom_val;
+}
+
+MalType* core_reset(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to reset!");
+  MalType *atom = args[0];
+  mal_assert(is_atom(atom), "reset! expects an atom argument");
+  MalType *inner_val = args[1];
+  atom->atom_val = inner_val;
+  return inner_val;
+}
+
+MalType* core_swap(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc >= 2, "Expected at least 2 arguments to swap!");
+  MalType *atom = args[0];
+  mal_assert(is_atom(atom), "swap! expects an atom argument");
+  MalType *lambda = args[1];
+  mal_assert(is_lambda(lambda), "swap! expects a lambda argument");
+  MalType **swap_args = GC_MALLOC(argc * sizeof(MalType*));
+  swap_args[0] = atom->atom_val;
+  for(size_t i=2; i<argc; i++) {
+    swap_args[i - 1] = args[i];
+  }
+  atom->atom_val = trampoline(mal_continuation(lambda->fn, lambda->env, argc - 1, swap_args));
+  return atom->atom_val;
 }

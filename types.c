@@ -575,3 +575,10 @@ int hashmap_is_equal(MalType *map1, MalType *map2) {
   }
   return 1;
 }
+
+MalType* trampoline(MalType *result) {
+  while (result->type == MAL_CONTINUATION_TYPE) {
+    result = (result->fn)(result->env, result->argc, result->args);
+  }
+  return result;
+}

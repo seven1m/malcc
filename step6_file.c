@@ -47,6 +47,7 @@ int gen_vector_code(MalType *node, MalEnv *env, struct codegen *code, int ret, i
 void append_code(MalType *code, MalType *temp_code, int ret);
 MalType* next_var_name(char *base, int *var_num);
 MalType* build_env_name(MalEnv *env);
+MalType* trampoline(MalType *result);
 
 MalType* READ(char *str) {
   return read_str(str);
@@ -60,6 +61,19 @@ MalType* EVAL(MalType *ast, MalEnv *repl_env) {
   } else {
     printf("There was an error compiling.\n");
     return mal_blank_line();
+  }
+}
+
+MalType* user_eval(MalEnv *repl_env, size_t argc, MalType **args) {
+  UNUSED(repl_env);
+  mal_assert(argc == 1, "Expected 1 argument to eval");
+  MalType* (*EVAL)(MalEnv *env);
+  MalType *ast = args[0];
+  int var_num = 1;
+  if (compile_eval(ast, repl_env, &var_num, &EVAL)) {
+    return trampoline(EVAL(repl_env));
+  } else {
+    return mal_error(mal_string("There was an error compiling."));
   }
 }
 
@@ -721,8 +735,6 @@ char *parent_directory(char *bin_path) {
 }
 
 int main(int argc, char *argv[]) {
-  UNUSED(argc);
-
   PATH = parent_directory(argv[0]);
 
   MalEnv *repl_env = build_top_env();
@@ -736,19 +748,37 @@ int main(int argc, char *argv[]) {
     fn = hashmap_iter_get_data(core_iter);
     env_set(repl_env, name, mal_builtin_function(fn, name, repl_env));
   }
+  env_set(repl_env, "eval", mal_builtin_function(user_eval, "eval", repl_env));
 
-  rep("(def! not (fn* (a) (if a false true)))", repl_env);
-
-  char *buffer;
-  read_history("history.txt");
-  while ((buffer = readline("user> ")) != NULL) {
-    printf("%s\n", rep(buffer, repl_env));
-    if (strlen(buffer) > 0) {
-      add_history(buffer);
-    }
-    free(buffer);
+  MalType *arg_list = mal_vector();
+  for (int i=2; i<argc; i++) {
+    mal_vector_push(arg_list, mal_string(argv[i]));
   }
-  write_history("history.txt");
+  env_set(repl_env, "*ARGV*", mal_vector_to_list(arg_list));
+
+  rep(
+    mal_sprintf(
+      "(do (def! not (fn* (a) (if a false true)))"
+          "(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\"))))))",
+      pr_str(arg_list, 1)
+    )->str,
+    repl_env
+  );
+
+  if (argc > 1) {
+    rep(mal_sprintf("(load-file %s)", pr_str(mal_string(argv[1]), 1))->str, repl_env);
+  } else {
+    char *buffer;
+    read_history("history.txt");
+    while ((buffer = readline("user> ")) != NULL) {
+      printf("%s\n", rep(buffer, repl_env));
+      if (strlen(buffer) > 0) {
+        add_history(buffer);
+      }
+      free(buffer);
+    }
+    write_history("history.txt");
+  }
 
   return 0;
 }
