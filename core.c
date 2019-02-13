@@ -42,6 +42,9 @@ struct hashmap* core_ns() {
   hashmap_put(ns, "swap!", core_swap);
   hashmap_put(ns, "cons", core_cons);
   hashmap_put(ns, "concat", core_concat);
+  hashmap_put(ns, "nth", core_nth);
+  hashmap_put(ns, "first", core_first);
+  hashmap_put(ns, "rest", core_rest);
   return ns;
 }
 
@@ -318,4 +321,59 @@ MalType* core_concat(MalEnv *env, size_t argc, MalType **args) {
     }
   }
   return mal_vector_to_list(final);
+}
+
+MalType* core_nth(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to nth");
+  MalType *list_or_vector = args[0];
+  mal_assert(is_list_like(list_or_vector), "nth expects a list or a vector argument");
+  MalType *mal_index = args[1];
+  mal_assert(is_number(mal_index), "nth expects a number as the index argument");
+  size_t index = (size_t)mal_index->number;
+  if (is_vector(list_or_vector)) {
+    size_t size = mal_vector_len(list_or_vector);
+    if (index >= size) {
+      return mal_error(mal_string("nth index out of range"));
+    }
+    return mal_vector_ref(list_or_vector, index);
+  } else {
+    size_t size = mal_list_len(list_or_vector);
+    if (index >= size) {
+      return mal_error(mal_string("nth index out of range"));
+    }
+    return mal_list_ref(list_or_vector, index);
+  }
+}
+
+MalType* core_first(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to first");
+  MalType *list = args[0];
+  mal_assert(is_list_like(list) || is_nil(list), "first expects a list or a vector argument");
+  if (is_empty(list) || is_nil(list)) {
+    return mal_nil();
+  } else if (is_cons(list)) {
+    return list->car;
+  } else if (list->vec_len > 0) {
+    return list->vec[0];
+  } else {
+    return mal_nil();
+  }
+}
+
+MalType* core_rest(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to rest");
+  MalType *list = args[0];
+  mal_assert(is_list_like(list) || is_nil(list), "rest expects a list or a vector argument");
+  if (is_empty(list) || is_nil(list)) {
+    return mal_empty();
+  } else if (is_cons(list)) {
+    return list->cdr;
+  } else if (list->vec_len > 0) {
+    return mal_cdr2(list);
+  } else {
+    return mal_empty();
+  }
 }

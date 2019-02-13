@@ -33,5 +33,8 @@ MalType* core_reset(MalEnv *env, size_t argc, MalType **args);
 MalType* core_swap(MalEnv *env, size_t argc, MalType **args);
 MalType* core_cons(MalEnv *env, size_t argc, MalType **args);
 MalType* core_concat(MalEnv *env, size_t argc, MalType **args);
+MalType* core_nth(MalEnv *env, size_t argc, MalType **args);
+MalType* core_first(MalEnv *env, size_t argc, MalType **args);
+MalType* core_rest(MalEnv *env, size_t argc, MalType **args);
 
 #endif
