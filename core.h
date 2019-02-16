@@ -36,5 +36,26 @@ MalType* core_concat(MalEnv *env, size_t argc, MalType **args);
 MalType* core_nth(MalEnv *env, size_t argc, MalType **args);
 MalType* core_first(MalEnv *env, size_t argc, MalType **args);
 MalType* core_rest(MalEnv *env, size_t argc, MalType **args);
+MalType* core_throw(MalEnv *env, size_t argc, MalType **args);
+MalType* core_apply(MalEnv *env, size_t argc, MalType **args);
+MalType* core_map(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_nil(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_true(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_false(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_symbol(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_keyword(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_vector(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_map(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_sequential(MalEnv *env, size_t argc, MalType **args);
+MalType* core_symbol(MalEnv *env, size_t argc, MalType **args);
+MalType* core_keyword(MalEnv *env, size_t argc, MalType **args);
+MalType* core_vector(MalEnv *env, size_t argc, MalType **args);
+MalType* core_hash_map(MalEnv *env, size_t argc, MalType **args);
+MalType* core_assoc(MalEnv *env, size_t argc, MalType **args);
+MalType* core_dissoc(MalEnv *env, size_t argc, MalType **args);
+MalType* core_get(MalEnv *env, size_t argc, MalType **args);
+MalType* core_contains(MalEnv *env, size_t argc, MalType **args);
+MalType* core_keys(MalEnv *env, size_t argc, MalType **args);
+MalType* core_vals(MalEnv *env, size_t argc, MalType **args);
 
 #endif

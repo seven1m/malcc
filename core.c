@@ -45,6 +45,27 @@ struct hashmap* core_ns() {
   hashmap_put(ns, "nth", core_nth);
   hashmap_put(ns, "first", core_first);
   hashmap_put(ns, "rest", core_rest);
+  hashmap_put(ns, "throw", core_throw);
+  hashmap_put(ns, "apply", core_apply);
+  hashmap_put(ns, "map", core_map);
+  hashmap_put(ns, "nil?", core_is_nil);
+  hashmap_put(ns, "true?", core_is_true);
+  hashmap_put(ns, "false?", core_is_false);
+  hashmap_put(ns, "symbol?", core_is_symbol);
+  hashmap_put(ns, "keyword?", core_is_keyword);
+  hashmap_put(ns, "vector?", core_is_vector);
+  hashmap_put(ns, "map?", core_is_map);
+  hashmap_put(ns, "sequential?", core_is_sequential);
+  hashmap_put(ns, "symbol", core_symbol);
+  hashmap_put(ns, "keyword", core_keyword);
+  hashmap_put(ns, "vector", core_vector);
+  hashmap_put(ns, "hash-map", core_hash_map);
+  hashmap_put(ns, "assoc", core_assoc);
+  hashmap_put(ns, "dissoc", core_dissoc);
+  hashmap_put(ns, "get", core_get);
+  hashmap_put(ns, "contains?", core_contains);
+  hashmap_put(ns, "keys", core_keys);
+  hashmap_put(ns, "vals", core_vals);
   return ns;
 }
 
@@ -376,4 +397,236 @@ MalType* core_rest(MalEnv *env, size_t argc, MalType **args) {
   } else {
     return mal_empty();
   }
+}
+
+MalType* core_throw(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to throw");
+  MalType *val = args[0];
+  return mal_error(val);
+}
+
+MalType* core_apply(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc >= 2, "Expected at least 2 arguments to apply");
+  MalType *lambda = args[0];
+  mal_assert(is_lambda(lambda), "Expected first argument of apply to be a lambda");
+  MalType *args_vec = mal_vector();
+  struct list_or_vector_iter *iter;
+  MalType *arg;
+  for (size_t i=1; i<argc; i++) {
+    if (is_list_like(args[i])) {
+      for (iter = list_or_vector_iter(args[i]); iter; iter = list_or_vector_iter_next(iter)) {
+        arg = list_or_vector_iter_get_obj(iter);
+        mal_vector_push(args_vec, arg);
+      }
+    } else {
+      mal_vector_push(args_vec, args[i]);
+    }
+  }
+  return trampoline(mal_continuation(lambda->fn, lambda->env, args_vec->vec_len, args_vec->vec));
+}
+
+MalType* core_map(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to map");
+  MalType *lambda = args[0];
+  mal_assert(is_lambda(lambda), "Expected first argument of map to be a lambda");
+  MalType *list = args[1];
+  mal_assert(is_list_like(list), "Expected second argument of map to be a list or vector");
+  MalType *result_vec = mal_vector();
+  struct list_or_vector_iter *iter;
+  MalType *val;
+  for (iter = list_or_vector_iter(list); iter; iter = list_or_vector_iter_next(iter)) {
+    val = list_or_vector_iter_get_obj(iter);
+    val = trampoline(mal_continuation_1(lambda->fn, lambda->env, val));
+    bubble_if_error(val);
+    mal_vector_push(result_vec, val);
+  }
+  return mal_vector_to_list(result_vec);
+}
+
+MalType* core_is_nil(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to nil?");
+  MalType *val = args[0];
+  return is_nil(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_true(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to true?");
+  MalType *val = args[0];
+  return is_true(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_false(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to false?");
+  MalType *val = args[0];
+  return is_false(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_symbol(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to symbol?");
+  MalType *val = args[0];
+  return is_symbol(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_keyword(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to keyword?");
+  MalType *val = args[0];
+  return is_keyword(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_vector(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to vector?");
+  MalType *val = args[0];
+  return is_vector(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_map(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to map?");
+  MalType *val = args[0];
+  return is_hashmap(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_sequential(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to sequential?");
+  MalType *val = args[0];
+  return is_list_like(val) ? mal_true() : mal_false();
+}
+
+MalType* core_symbol(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to symbol function");
+  MalType *val = args[0];
+  mal_assert(is_string(val), "symbol function expects a string argument");
+  return mal_symbol(val->str);
+}
+
+MalType* core_keyword(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to keyword function");
+  MalType *val = args[0];
+  if (is_keyword(val)) {
+    return val;
+  }
+  mal_assert(is_string(val), "keyword function expects a string argument");
+  return mal_keyword(val->str);
+}
+
+MalType* core_vector(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  MalType *vec = mal_vector();
+  for (size_t i=0; i<argc; i++) {
+    mal_vector_push(vec, args[i]);
+  }
+  return vec;
+}
+
+MalType* core_hash_map(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc % 2 == 0, "Expected even number of arguments to hash-map");
+  MalType *map = mal_hashmap();
+  for (size_t i=0; i<argc; i+=2) {
+    mal_hashmap_put(map, args[i], args[i+1]);
+  }
+  return map;
+}
+
+MalType* core_assoc(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc % 2 == 1, "Expected odd number of arguments to assoc");
+  MalType *map = args[0];
+  mal_assert(is_hashmap(map), "Expected first argument to assoc to be a hash-map");
+  MalType *new_map = mal_hashmap();
+  struct hashmap_iter *iter;
+  MalType *key, *val;
+  for (iter = hashmap_iter(&map->hashmap); iter; iter = hashmap_iter_next(&map->hashmap, iter)) {
+    key = read_str((char*)hashmap_iter_get_key(iter));
+    val = (MalType*)hashmap_iter_get_data(iter);
+    mal_hashmap_put(new_map, key, val);
+  }
+  for (size_t i=1; i<argc; i+=2) {
+    mal_hashmap_put(new_map, args[i], args[i+1]);
+  }
+  return new_map;
+}
+
+MalType* core_dissoc(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc >= 2, "Expected at least 2 arguments to disassoc");
+  MalType *map = args[0];
+  mal_assert(is_hashmap(map), "Expected first argument to disassoc to be a hash-map");
+  MalType *new_map = mal_hashmap();
+  struct hashmap_iter *iter;
+  MalType *key, *val;
+  int skip;
+  for (iter = hashmap_iter(&map->hashmap); iter; iter = hashmap_iter_next(&map->hashmap, iter)) {
+    skip = 0;
+    key = read_str((char*)hashmap_iter_get_key(iter));
+    for (size_t i=1; i<argc; i++) {
+      if (is_equal(args[i], key)) skip = 1;
+    }
+    if (skip) continue;
+    val = (MalType*)hashmap_iter_get_data(iter);
+    mal_hashmap_put(new_map, key, val);
+  }
+  return new_map;
+}
+
+MalType* core_get(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to get");
+  MalType *map = args[0];
+  if (is_nil(map)) {
+    return mal_nil();
+  }
+  mal_assert(is_hashmap(map), "Expected first argument to get function to be a hash-map");
+  MalType *key = args[1];
+  MalType *val = mal_hashmap_get(map, key);
+  if (val) {
+    return val;
+  } else {
+    return mal_nil();
+  }
+}
+
+MalType* core_contains(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to contains?");
+  MalType *map = args[0];
+  mal_assert(is_hashmap(map), "Expected first argument to contains function to be a hash-map");
+  MalType *key = args[1];
+  return mal_hashmap_get(map, key) ? mal_true() : mal_false();
+}
+
+MalType* core_keys(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to keys");
+  MalType *map = args[0];
+  mal_assert(is_hashmap(map), "Expected first argument to keys function to be a hash-map");
+  MalType *keys_vec = mal_hashmap_keys_to_vector(map);
+  return mal_vector_to_list(keys_vec);
+}
+
+MalType* core_vals(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to vals");
+  MalType *map = args[0];
+  mal_assert(is_hashmap(map), "Expected first argument to vals function to be a hash-map");
+  MalType *vals_vec = mal_vector();
+  struct hashmap_iter *iter;
+  MalType *val;
+  for (iter = hashmap_iter(&map->hashmap); iter; iter = hashmap_iter_next(&map->hashmap, iter)) {
+    val = (MalType*)hashmap_iter_get_data(iter);
+    mal_vector_push(vals_vec, val);
+  }
+  return mal_vector_to_list(vals_vec);
 }
