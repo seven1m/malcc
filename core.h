@@ -57,5 +57,15 @@ MalType* core_get(MalEnv *env, size_t argc, MalType **args);
 MalType* core_contains(MalEnv *env, size_t argc, MalType **args);
 MalType* core_keys(MalEnv *env, size_t argc, MalType **args);
 MalType* core_vals(MalEnv *env, size_t argc, MalType **args);
+MalType* core_readline(MalEnv *env, size_t argc, MalType **args);
+MalType* core_meta(MalEnv *env, size_t argc, MalType **args);
+MalType* core_with_meta(MalEnv *env, size_t argc, MalType **args);
+MalType* core_seq(MalEnv *env, size_t argc, MalType **args);
+MalType* core_conj(MalEnv *env, size_t argc, MalType **args);
+MalType* core_time_ms(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_string(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_number(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_fn(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_macro(MalEnv *env, size_t argc, MalType **args);
 
 #endif

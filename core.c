@@ -66,6 +66,16 @@ struct hashmap* core_ns() {
   hashmap_put(ns, "contains?", core_contains);
   hashmap_put(ns, "keys", core_keys);
   hashmap_put(ns, "vals", core_vals);
+  hashmap_put(ns, "readline", core_readline);
+  hashmap_put(ns, "meta", core_meta);
+  hashmap_put(ns, "with-meta", core_with_meta);
+  hashmap_put(ns, "seq", core_seq);
+  hashmap_put(ns, "conj", core_conj);
+  hashmap_put(ns, "time-ms", core_time_ms);
+  hashmap_put(ns, "string?", core_is_string);
+  hashmap_put(ns, "number?", core_is_number);
+  hashmap_put(ns, "fn?", core_is_fn);
+  hashmap_put(ns, "macro?", core_is_macro);
   return ns;
 }
 
@@ -629,4 +639,131 @@ MalType* core_vals(MalEnv *env, size_t argc, MalType **args) {
     mal_vector_push(vals_vec, val);
   }
   return mal_vector_to_list(vals_vec);
+}
+
+MalType* core_readline(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to readline");
+  MalType *prompt = args[0];
+  mal_assert(is_string(prompt), "Expected first argument to readline to be a string");
+  char buffer[1000];
+  printf("%s", prompt->str);
+  if (fgets(buffer, 1000, stdin) == NULL) {
+    return mal_nil();
+  } else {
+    size_t len = strlen(buffer);
+    if (buffer[len-1] == '\n') {
+      buffer[len-1] = 0; // strip the newline
+    }
+    return mal_string(buffer);
+  }
+}
+
+MalType* core_meta(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to meta");
+  MalType *val = args[0];
+  if (val->meta) {
+    return val->meta;
+  } else {
+    return mal_nil();
+  }
+}
+
+MalType* core_with_meta(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 arguments to with-meta");
+  MalType *val = args[0];
+  MalType *new_val = mal_alloc();
+  memcpy(new_val, val, sizeof(MalType));
+  new_val->meta = args[1];
+  return new_val;
+}
+
+MalType* core_seq(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 arguments to seq");
+  MalType *val = args[0];
+  switch (val->type) {
+    case MAL_CONS_TYPE:
+      return val;
+    case MAL_STRING_TYPE:
+      if (val->str_len == 0) {
+        return mal_nil();
+      } else {
+        return mal_string_to_list(val);
+      }
+    case MAL_VECTOR_TYPE:
+      if (val->vec_len == 0) {
+        return mal_nil();
+      } else {
+        return mal_vector_to_list(val);
+      }
+    default:
+      return mal_nil();
+	}
+}
+
+MalType* core_conj(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc >= 2, "Expected at least 2 arguments to conj");
+  MalType *collection = args[0];
+  mal_assert(
+    is_empty(collection) || is_cons(collection) || is_vector(collection),
+    "Expected first argument to conj to be a list or vector"
+  );
+  if (is_empty(collection) || is_cons(collection)) {
+    MalType *node = collection;
+    for (size_t i=1; i<argc; i++) {
+      node = mal_cons(args[i], node);
+    }
+    return node;
+  } else {
+    MalType *vec = mal_vector();
+    for (size_t i=0; i<collection->vec_len; i++) {
+      mal_vector_push(vec, collection->vec[i]);
+    }
+    for (size_t i=1; i<argc; i++) {
+      mal_vector_push(vec, args[i]);
+    }
+    return vec;
+  }
+}
+
+MalType* core_time_ms(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  UNUSED(args);
+  mal_assert(argc == 0, "Expected 0 arguments to time-ms");
+  struct timeval tval;
+  gettimeofday(&tval, NULL);
+  long long microseconds = (tval.tv_sec * 1000000) + tval.tv_usec;
+  return mal_number(microseconds / 1000);
+}
+
+MalType* core_is_string(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to string?");
+  MalType *val = args[0];
+  return is_string(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_number(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to number?");
+  MalType *val = args[0];
+  return is_number(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_fn(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to fn?");
+  MalType *val = args[0];
+  return is_lambda(val) && !val->is_macro ? mal_true() : mal_false();
+}
+
+MalType* core_is_macro(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to macro?");
+  MalType *val = args[0];
+  return is_macro(val) ? mal_true() : mal_false();
 }

@@ -1,0 +1,16 @@
+image: ubuntu/lts
+packages:
+  - build-essential
+  - libedit-dev
+  - libgc-dev
+  - libpcre3-dev
+  - python
+sources:
+  - https://git.sr.ht/~tim/malcc
+tasks:
+  - build: |
+      cd malcc
+      make all
+  - test: |
+      cd malcc
+      make test
