@@ -30,7 +30,7 @@ brew install pcre libgc
 
 **Prerequisites on Ubuntu/Debian:**
 
-```
+```bash
 apt-get install libpcre3-dev libedit-dev libgc-dev
 ```
 
@@ -59,9 +59,9 @@ user> ^D
 12586269025
 ```
 
-**Ahead-of-Time Compiling a mal file:**
+**Ahead-of-Time compiling a mal file:**
 
-```
+```bash
 → ./malcc --compile examples/fib.mal fib
 → ./fib
 55
@@ -75,7 +75,7 @@ order-of-magnitude speedup for long-running code vs the C++ implementation:
 
 **C++:**
 
-```
+```bash
 → ../cpp/stepA_mal perf1.mal
 "Elapsed time: 1 msecs"
 → ../cpp/stepA_mal perf2.mal
@@ -86,7 +86,7 @@ iters over 10 seconds: 12415
 
 **malcc:**
 
-```
+```bash
 → ../../stepA_mal perf1.mal
 "Elapsed time: 0 msecs"
 → ../../stepA_mal perf2.mal
@@ -96,7 +96,7 @@ iters over 10 seconds: 226216
 ```
 
 Note: I'm not sure if this is a fair comparison, but I could not coax the C
-intepreter implementation of mal to run the perf3 test, so I figured the C++
+interpreter implementation of mal to run the perf3 test, so I figured the C++
 implementation was the next-best thing.
 
 ## Approach
