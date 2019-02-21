@@ -55,3 +55,26 @@ char* string(char *str) {
   snprintf(copy, len + 1, "%s", str);
   return copy;
 }
+
+MalType* program_arguments_as_vector(int argc, char *argv[]) {
+  MalType *arg_vec = mal_vector();
+  for (int i=1; i<argc; i++) {
+    mal_vector_push(arg_vec, mal_string(argv[i]));
+  }
+  return arg_vec;
+}
+
+MalType* read_file(char *filename) {
+  MalType *content = mal_string("");
+  FILE *fp = fopen(filename, "r");
+  if(!fp) {
+    printf("Error opening file %s\n", filename);
+    exit(1);
+  }
+  char buffer[100];
+  while (fgets(buffer, 100, fp)) {
+    mal_string_append(content, buffer);
+  }
+  fclose(fp);
+  return content;
+}

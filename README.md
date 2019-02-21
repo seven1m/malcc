@@ -14,30 +14,56 @@ It uses the [Tiny C Compiler](https://bellard.org/tcc/) as the compiler backend
 and has full support for the Mal language, including macros, tail-call elimination,
 and even run-time eval.
 
+malcc can also be used as an ahead-of-time compiler for Mal, producing a single
+binary file for distribution (though using it this way sacrifices run-time eval
+functionality since the compiler is not shipped in the resulting binary).
+
 ## Building and Running
 
-malcc has been tested on Ubuntu 18.04 and macOS 10.14 Mojave. To build the
-software:
+malcc has been tested on Ubuntu 18.04 and macOS 10.14 Mojave.
+
+**Prerequisites on Mac:**
+
+```bash
+brew install pcre libgc
+```
+
+**Prerequisites on Ubuntu/Debian:**
+
+```
+apt-get install libpcre3-dev libedit-dev libgc-dev
+```
+
+**Building malcc:**
 
 ```bash
 git submodule update --init
 make all
 ```
 
-To run the REPL:
+**Running the REPL:**
 
 ```bash
-→ ./stepA_mal
+→ ./malcc
 Mal [malcc]
 user> (+ 1 2)
 3
 user> ^D
 ```
 
-...or to load and run a mal file:
+**Running a mal file:**
 
 ```bash
-→ ./stepA_mal examples/fib.mal
+→ ./malcc examples/fib.mal
+55
+12586269025
+```
+
+**Ahead-of-Time Compiling a mal file:**
+
+```
+→ ./malcc --compile examples/fib.mal fib
+→ ./fib
 55
 12586269025
 ```

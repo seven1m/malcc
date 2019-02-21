@@ -256,6 +256,16 @@ MalType* mal_vector_to_list(MalType *val) {
   return cell;
 }
 
+MalType* mal_vector_range(MalType *vec, int start, int stop_exclusive) {
+  int len = mal_vector_len(vec);
+  if (stop_exclusive == -1 || stop_exclusive > len) stop_exclusive = len;
+  MalType *new_vec = mal_vector();
+  for (int i=start; i<stop_exclusive; i++) {
+    mal_vector_push(new_vec, mal_vector_ref(vec, i));
+  }
+  return new_vec;
+}
+
 #define HASHMAP_INIT_SIZE 10
 
 MalType* mal_hashmap() {

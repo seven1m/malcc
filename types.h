@@ -118,6 +118,7 @@ size_t mal_vector_len(MalType *vector);
 MalType* mal_vector_ref(MalType *val, size_t index);
 void mal_vector_push(MalType *vector, MalType *value);
 MalType* mal_vector_to_list(MalType *val);
+MalType* mal_vector_range(MalType *vec, int start, int stop_exclusive);
 
 MalType* mal_car2(MalType *val);
 MalType* mal_cdr2(MalType *val);

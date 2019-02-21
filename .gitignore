@@ -9,5 +9,6 @@ step7_quote
 step8_macros
 step9_try
 stepA_mal
+malcc
 *.o
 history.txt

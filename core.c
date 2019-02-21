@@ -264,18 +264,7 @@ MalType* core_slurp(MalEnv *env, size_t argc, MalType **args) {
   mal_assert(argc == 1, "Expected 1 argument to slurp");
   MalType *filename = args[0];
   mal_assert(is_string(filename), "slurp expects a string argument");
-  MalType *content = mal_string("");
-  FILE *fp = fopen(filename->str, "r");
-  if(!fp) {
-    printf("Error opening file %s\n", filename->str);
-    exit(1);
-  }
-  char buffer[100];
-  while (fgets(buffer, 100, fp)) {
-    mal_string_append(content, buffer);
-  }
-  fclose(fp);
-  return mal_string(content->str);
+  return read_file(filename->str);
 }
 
 MalType* core_atom(MalEnv *env, size_t argc, MalType **args) {
@@ -766,4 +755,16 @@ MalType* core_is_macro(MalEnv *env, size_t argc, MalType **args) {
   mal_assert(argc == 1, "Expected 1 argument to macro?");
   MalType *val = args[0];
   return is_macro(val) ? mal_true() : mal_false();
+}
+
+void add_core_ns_to_env(MalEnv *env) {
+  struct hashmap *ns = core_ns();
+  struct hashmap_iter *core_iter;
+  char *name;
+  MalType* (*fn)(MalEnv*, size_t, MalType**);
+  for (core_iter = hashmap_iter(ns); core_iter; core_iter = hashmap_iter_next(ns, core_iter)) {
+    name = (char*)hashmap_iter_get_key(core_iter);
+    fn = hashmap_iter_get_data(core_iter);
+    env_set(env, name, mal_builtin_function(fn, name, env));
+  }
 }
