@@ -50,7 +50,7 @@ int gen_vector_code(MalType *node, MalEnv *env, struct codegen *code, int ret, i
 MalType* quasiquote(MalType *node);
 int is_macro_call(MalType *node, MalEnv *env);
 void defmacro(MalType *node, MalEnv *env);
-MalType* macroexpand(MalType *ast, MalEnv *env, int debug);
+MalType* macroexpand(MalType *ast, MalEnv *env);
 void append_code(MalType *code, MalType *temp_code, int ret);
 MalType* next_var_name(char *base, int *var_num);
 MalType* build_env_name(MalEnv *env);
@@ -247,7 +247,7 @@ int gen_call_args_code(MalType *args_name, MalType *node, MalEnv *env, struct co
 }
 
 int gen_call_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var_num) {
-  node = macroexpand(node, env, 0);
+  node = macroexpand(node, env);
   if (!is_cons(node)) {
     return gen_code(node, env, code, ret, var_num, 0);
   }
@@ -278,7 +278,7 @@ int gen_call_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int
       append_code(code->body, mal_string("mal_blank_line()"), ret);
       return 1;
     } else if (strcmp(sym->symbol, "macroexpand") == 0) {
-      node = macroexpand(mal_car(mal_cdr(node)), env, 1);
+      node = macroexpand(mal_car(mal_cdr(node)), env);
       return gen_code(node, env, code, ret, var_num, 1);
     } else if (strcmp(sym->symbol, "try*") == 0) {
       return gen_try_code(mal_cdr(node), env, code, ret, var_num);
@@ -853,15 +853,10 @@ void inspect_env(MalEnv *env) {
   }
 }
 
-MalType* macroexpand(MalType *ast, MalEnv *env, int debug) {
+MalType* macroexpand(MalType *ast, MalEnv *env) {
   MalType *name, *macro, *arg_list, **args;
   size_t argc;
-  if (debug) printf("macroexpand ast = %s\n", pr_str(ast, 1));
-  MalType *sym = mal_car(ast);
-  if (debug) printf("car = %s\n", pr_str(sym, 1));
-  if (debug) inspect_env(env);
   while (is_macro_call(ast, env)) {
-    if (debug) printf("while macroexpand ast = %s\n", pr_str(ast, 1));
     name = mal_car(ast);
     macro = env_get(env, name->symbol);
     arg_list = mal_cdr(ast);
@@ -877,9 +872,7 @@ MalType* macroexpand(MalType *ast, MalEnv *env, int debug) {
     }
     ast = trampoline(mal_continuation(macro->fn, macro->env, argc, args));
     assert(ast != NULL);
-    if (debug) printf("while macroexpand ast = %s\n", pr_str(ast, 1));
   }
-  if (debug) printf("final macroexpand ast = %s\n", pr_str(ast, 1));
   return ast;
 }
 
