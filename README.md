@@ -116,6 +116,10 @@ implementations:
    suit my taste. A copy of the mal implementation of mal and the mal tests
    were copied into the `mal` directory to provide test coverage.
 
+## Contributing
+
+Send patches/bug reports to ~tim/public-inbox@lists.sr.ht
+
 ## License
 
 This project's sourcecode is copyrighted by Tim Morgan and licensed under the
