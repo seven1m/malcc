@@ -97,6 +97,9 @@ test-self-hosted: all
 	$(RUN_TEST_CMD) --test-timeout 30 step9_try.mal ../../self_hosted_run
 	$(RUN_TEST_CMD) --test-timeout 30 stepA_mal.mal ../../self_hosted_run
 
+perf: all
+	cd mal/tests && ../../malcc perf1.mal && ../../malcc perf2.mal && ../../malcc perf3.mal
+
 cloc:
 	cloc --exclude-dir='tinycc,mal' --not-match-f='hashmap.*|step.*' .
 

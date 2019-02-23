@@ -131,9 +131,7 @@ MalType* mal_string(char *str) {
 void mal_grow_string(MalType *val, size_t capacity) {
   size_t len = strlen(val->str);
   assert(capacity >= len);
-  char *new_str = GC_MALLOC(capacity + 1);
-  snprintf(new_str, capacity + 1, "%s", val->str);
-  val->str = new_str;
+  val->str = GC_REALLOC(val->str, capacity + 1);
   val->str_cap = capacity;
 }
 
@@ -237,11 +235,7 @@ void mal_vector_push(MalType *vector, MalType *value) {
   size_t len = mal_vector_len(vector);
   if (len >= capacity) {
     vector->vec_cap *= VECTOR_GROW_FACTOR;
-    MalType **new_ary = GC_MALLOC(sizeof(MalType*) * vector->vec_cap);
-    for (size_t i=0; i<len; i++) {
-      new_ary[i] = mal_vector_ref(vector, i);
-    }
-    vector->vec = new_ary;
+    vector->vec = GC_REALLOC(vector->vec, sizeof(MalType*) * vector->vec_cap);
   }
   vector->vec_len++;
   vector->vec[len] = value;
