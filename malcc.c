@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libtcc.h>
+#include <locale.h>
 
 #include "core.h"
 #include "env.h"
@@ -922,7 +923,11 @@ char* PRINT(MalType *ast) {
 }
 
 char* rep(char *str, MalEnv *repl_env) {
-  MalType *result = EVAL(READ(str), repl_env);
+  MalType *ast = READ(str);
+  if (is_error(ast)) {
+    return PRINT(mal_sprintf("ERROR: %s\n", pr_str(ast->error_val, 0)));
+  }
+  MalType *result = EVAL(ast, repl_env);
   if (is_error(result)) {
     return PRINT(mal_sprintf("ERROR: %s\n", pr_str(result->error_val, 0)));
   } else {
@@ -1018,6 +1023,8 @@ int main(int argc, char *argv[]) {
   env_set(repl_env, "*ARGV*", mal_args);
 
   rep(builtin_defs, repl_env);
+
+  setlocale(LC_ALL, ""); // use locale set from environment
 
   if (mal_vector_len(arg_vec) >= 1) {
     rep(mal_sprintf("(load-file %s)", pr_str(mal_vector_ref(arg_vec, 0), 1))->str, repl_env);

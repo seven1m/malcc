@@ -198,10 +198,27 @@ char* mal_string_substring(MalType *orig, size_t start, size_t len) {
 MalType* mal_string_to_list(MalType *orig) {
   assert(is_string(orig));
   MalType *vec = mal_vector();
-  char buffer[2];
+  char buffer[5];
   for (size_t i=0; i<orig->str_len; i++) {
     buffer[0] = orig->str[i];
-    buffer[1] = 0;
+    if (((unsigned char)buffer[0] >> 3) == 30) { // 11110xxx, 4 bytes
+      if (i + 3 >= orig->str_len) return mal_error(mal_string("Invalid utf-8 encoding in string"));
+      buffer[1] = orig->str[++i];
+      buffer[2] = orig->str[++i];
+      buffer[3] = orig->str[++i];
+      buffer[4] = 0;
+    } else if (((unsigned char)buffer[0] >> 4) == 14) { // 1110xxxx, 3 bytes
+      if (i + 2 >= orig->str_len) return mal_error(mal_string("Invalid utf-8 encoding in string"));
+      buffer[1] = orig->str[++i];
+      buffer[2] = orig->str[++i];
+      buffer[3] = 0;
+    } else if (((unsigned char)buffer[0] >> 5) == 6) { // 110xxxxx, 2 bytes
+      if (i + 1 >= orig->str_len) return mal_error(mal_string("Invalid utf-8 encoding in string"));
+      buffer[1] = orig->str[++i];
+      buffer[2] = 0;
+    } else {
+      buffer[1] = 0;
+    }
     mal_vector_push(vec, mal_string(buffer));
   }
   return mal_vector_to_list(vec);

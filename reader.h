@@ -30,7 +30,7 @@ MalType* read_list(Reader* reader);
 MalType* read_vector(Reader* reader);
 MalType* read_hashmap(Reader *reader);
 MalType* read_string(Reader *reader);
-char unescape_char(char c);
+char unescape_char(char *token, size_t *i, size_t len);
 MalType* read_atom(Reader* reader);
 
 #endif

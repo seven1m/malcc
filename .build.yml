@@ -7,6 +7,8 @@ packages:
   - python
 sources:
   - https://git.sr.ht/~tim/malcc
+environment:
+  LC_ALL: C.UTF-8
 tasks:
   - build: |
       cd malcc

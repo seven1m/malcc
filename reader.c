@@ -225,17 +225,22 @@ MalType* read_string(Reader *reader) {
   size_t len = strlen(token);
   char *str = GC_MALLOC(len + 1);
   size_t index = 0;
-  char escaped;
   int saw_quotes = 0;
+  char unescaped;
   for (size_t i=0; i<len; i++) {
     switch (token[i]) {
       case '"':
         saw_quotes++;
         break;
       case '\\':
-        escaped = token[++i];
-        str[index++] = unescape_char(escaped);
-        break;
+        i++;
+        unescaped = unescape_char(token, &i, len - 1); // note: len-1 because of closing quote
+        if (unescaped) {
+          str[index++] = unescaped;
+          break;
+        } else {
+          return mal_error(mal_string("Invalid escape sequence in string"));
+        }
       default:
         str[index++] = token[i];
     }
@@ -247,9 +252,22 @@ MalType* read_string(Reader *reader) {
   return mal_string(str);
 }
 
-char unescape_char(char c) {
+char unescape_char(char *token, size_t *i, size_t len) {
+  char c = token[*i];
   if (c == 'n') {
     return 10; // newline
+  } else if (c == 'x') {
+    char seq[3];
+    if ((*i)+2 < len) {
+      seq[0] = token[++*i];
+      seq[1] = token[++*i];
+      seq[2] = 0;
+      int val;
+      sscanf(seq, "%x", &val);
+      return (char)val;
+    } else {
+      return 0;
+    }
   } else {
     return c;
   }
