@@ -10,5 +10,7 @@ step8_macros
 step9_try
 stepA_mal
 malcc
+mal-in-mal
+mal-in-mal.c
 *.o
 history.txt

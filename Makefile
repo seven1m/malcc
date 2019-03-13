@@ -29,7 +29,10 @@ clean:
 	rm -f $(ALL_STEPS) *.o
 	cd tinycc && make clean
 
-test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 testA test-malcc test-self-hosted test-supplemental
+mal-in-mal: all
+	cd mal/mal && ../../malcc --compile stepA_mal.mal ../../mal-in-mal
+
+test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 testA test-malcc test-self-hosted test-supplemental test-mal-in-mal
 
 RUN_TEST_CMD=mal/runtest.py --rundir mal/tests --hard --deferrable --optional --start-timeout 1 --test-timeout 1
 
@@ -99,6 +102,17 @@ test-self-hosted: all
 
 test-supplemental: all
 	$(RUN_TEST_CMD) --test-timeout 30 ../../tests/utf-8.mal ../../malcc
+
+test-mal-in-mal: mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step2_eval.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step3_env.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step4_if_fn_do.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step5_tco.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step6_file.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step7_quote.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step8_macros.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 step9_try.mal ../../mal-in-mal
+	$(RUN_TEST_CMD) --test-timeout 30 stepA_mal.mal ../../mal-in-mal
 
 perf: all
 	cd mal/tests && ../../malcc perf1.mal && ../../malcc perf2.mal && ../../malcc perf3.mal

@@ -240,6 +240,9 @@ int gen_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var
       return 1;
     case MAL_VECTOR_TYPE:
       return gen_vector_code(node, env, code, ret, var_num);
+    case MAL_ERROR_TYPE:
+      printf("unhandled error during code gen: %s\n", pr_str(node->error_val, 1));
+      return 0;
     default:
       printf("unknown node type in code gen type=%d\n", node->type);
       return 0;
@@ -967,6 +970,8 @@ void aot_compile(MalType *arg_vec) {
     exit(1);
   }
   MalEnv *env = build_top_env();
+  add_core_ns_to_env(env);
+  rep(builtin_defs, env);
   MalType *filename = mal_vector_ref(arg_vec, 1);
   MalType *out_filename = mal_vector_ref(arg_vec, 2);
   MalType *contents = read_file(filename->str);
@@ -983,10 +988,10 @@ void aot_compile(MalType *arg_vec) {
     fprintf(f, "%s\n", out->str);
     fclose(f);
     char *cmd = mal_sprintf(
-      "gcc -g -I tinycc -o %S %S.c reader.c printer.c hashmap.c types.c util.c env.c core.c " \
-      "tinycc/libtcc.a -ledit -lgc -lpcre -ldl",
-      out_filename,
-      out_filename
+      "gcc -g -I %s/tinycc -I %s -o %S %S.c %s/reader.c %s/printer.c %s/hashmap.c %s/types.c %s/util.c %s/env.c %s/core.c " \
+      "%s/tinycc/libtcc.a -ledit -lgc -lpcre -ldl",
+      PATH, PATH, out_filename, out_filename, PATH, PATH, PATH, PATH, PATH, PATH, PATH,
+      PATH
     )->str;
     fprintf(stderr, "%s\n", cmd);
     int result = system(cmd);
