@@ -118,7 +118,7 @@ implementations:
 
 ## Contributing
 
-Send patches/bug reports to ~tim/public-inbox@lists.sr.ht
+Send patches/bug reports to [~tim/public-inbox@lists.sr.ht](mailto:~tim/public-inbox@lists.sr.ht).
 
 ## License
 
