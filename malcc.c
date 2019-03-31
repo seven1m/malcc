@@ -925,16 +925,17 @@ char* PRINT(MalType *ast) {
   return pr_str(ast, 2);
 }
 
-char* rep(char *str, MalEnv *repl_env) {
+void rep(char *str, MalEnv *repl_env, int print_result) {
   MalType *ast = READ(str);
   if (is_error(ast)) {
-    return PRINT(mal_sprintf("ERROR: %s\n", pr_str(ast->error_val, 0)));
+    printf("%s\n", mal_sprintf("ERROR: %s", pr_str(ast->error_val, 0))->str);
   }
   MalType *result = EVAL(ast, repl_env);
   if (is_error(result)) {
-    return PRINT(mal_sprintf("ERROR: %s\n", pr_str(result->error_val, 0)));
+    printf("%s\n", mal_sprintf("ERROR: %s", pr_str(result->error_val, 0))->str);
   } else {
-    return PRINT(result);
+    char *out = PRINT(result);
+    if (print_result) printf("%s\n", out);
   }
 }
 
@@ -971,7 +972,7 @@ void aot_compile(MalType *arg_vec) {
   }
   MalEnv *env = build_top_env();
   add_core_ns_to_env(env);
-  rep(builtin_defs, env);
+  rep(builtin_defs, env, 1);
   MalType *filename = mal_vector_ref(arg_vec, 1);
   MalType *out_filename = mal_vector_ref(arg_vec, 2);
   MalType *contents = read_file(filename->str);
@@ -1027,18 +1028,18 @@ int main(int argc, char *argv[]) {
   MalType *mal_args = mal_vector_len(arg_vec) == 0 ? mal_empty() : mal_cdr(mal_vector_to_list(arg_vec));
   env_set(repl_env, "*ARGV*", mal_args);
 
-  rep(builtin_defs, repl_env);
+  rep(builtin_defs, repl_env, 0);
 
   setlocale(LC_ALL, ""); // use locale set from environment
 
   if (mal_vector_len(arg_vec) >= 1) {
-    rep(mal_sprintf("(load-file %s)", pr_str(mal_vector_ref(arg_vec, 0), 1))->str, repl_env);
+    rep(mal_sprintf("(load-file %s)", pr_str(mal_vector_ref(arg_vec, 0), 1))->str, repl_env, 0);
   } else {
-    rep("(println (str \"Mal [\" *host-language* \"]\"))", repl_env);
+    rep("(println (str \"Mal [\" *host-language* \"]\"))", repl_env, 0);
     char *buffer;
     read_history("history.txt");
     while ((buffer = readline("user> ")) != NULL) {
-      printf("%s\n", rep(buffer, repl_env));
+      rep(buffer, repl_env, 1);
       if (strlen(buffer) > 0) {
         add_history(buffer);
       }
