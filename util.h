@@ -8,7 +8,7 @@
 
 #define UNUSED(x) (void)(x)
 
-#define mal_assert(val, message) if (!(val)) { return mal_error(message); }
+#define mal_assert(val, message) if (!(val)) { return mal_error(mal_string(message)); }
 
 char* long_long_to_string(long long num);
 size_t num_char_len(long long num);

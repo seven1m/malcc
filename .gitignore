@@ -12,5 +12,6 @@ stepA_mal
 malcc
 mal-in-mal
 mal-in-mal.c
+mal-in-mal.dSYM
 *.o
 history.txt
