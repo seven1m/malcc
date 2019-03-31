@@ -136,3 +136,9 @@ docker-test-supplemental: docker-build
 
 docker-watch: docker-build
 	$(RUN_DOCKER_CMD) bash -c "ls *.c *.h Makefile | entr -c -s 'make test'"
+
+update-mal-directory:
+	rm -rf /tmp/mal mal
+	mkdir mal
+	git clone https://github.com/kanaka/mal.git /tmp/mal
+	cp -r /tmp/mal/LICENSE /tmp/mal/Makefile /tmp/mal/README.md /tmp/mal/core.mal /tmp/mal/mal /tmp/mal/perf.mal /tmp/mal/run_argv_test.sh /tmp/mal/runtest.py /tmp/mal/tests mal/

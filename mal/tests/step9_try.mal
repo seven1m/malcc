@@ -319,9 +319,8 @@
 
 ;;
 ;; Testing try* without catch*
-;; Disabled 2018-02-18 by Tim Morgan due to bug in the mal implementation. See: https://git.io/fhd3D
-;;(try* xyz)
-;;;/.*\'?xyz\'? not found.*
+(try* xyz)
+;/.*\'?xyz\'? not found.*
 
 ;;
 ;; Testing throwing non-strings

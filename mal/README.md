@@ -6,82 +6,86 @@
 
 **1. Mal is a Clojure inspired Lisp interpreter**
 
-**2. Mal is implemented in 74 languages**
+**2. Mal is implemented in 75 languages (76 implementations total)**
 
-* **Ada** - *created by [Chris Moore](https://github.com/zmower)*
-* **GNU awk** - *created by [Miutsuru Kariya](https://github.com/kariya-mitsuru)*
-* **Bash 4**
-* **BASIC** (C64 and QBasic)
-* **C**
-* **C++** - *created by [Stephen Thirlwall](https://github.com/sdt)*
-* **C#**
-* **ChucK** - *created by [Vasilij Schneidermann](https://github.com/wasamasa)*
-* **Common Lisp** - *created by [Iqbal Ansari](https://github.com/iqbalansari)*
-* **Clojure** (Clojure and ClojureScript)
-* **CoffeeScript**
-* **Crystal** - *created by [Linda_pp](https://github.com/rhysd)*
-* **D** - *created by [Dov Murik](https://github.com/dubek)*
-* **Dart** - *created by [Harry Terkelsen](https://github.com/hterkelsen)*
-* **Elixir** - *created by [Martin Ek](https://github.com/ekmartin)*
-* **Elm** - *created by [Jos van Bakel](https://github.com/c0deaddict)*
-* **Emacs Lisp** - *created by [Vasilij Schneidermann](https://github.com/wasamasa)*
-* **Erlang** - *created by [Nathan Fiedler](https://github.com/nlfiedler)*
-* **ES6** (ECMAScript 6 / ECMAScript 2015)
-* **F#** - *created by [Peter Stephens](https://github.com/pstephens)*
-* **Factor** - *created by [Jordan Lewis](https://github.com/jordanlewis)*
-* **Fantom** - *created by [Dov Murik](https://github.com/dubek)*
-* **Forth** - *created by [Chris Houser](https://github.com/chouser)*
-* **Go**
-* **Groovy**
-* **GNU Guile** - *created by [Mu Lei](https://github.com/NalaGinrut).*
-* **GNU Smalltalk** - *created by [Vasilij Schneidermann](https://github.com/wasamasa)*
-* **Haskell**
-* **Haxe** (Neko, Python, C++ and JavaScript)
-* **Hy**
-* **Io** - *created by [Dov Murik](https://github.com/dubek)*
-* **Java**
-* **JavaScript** ([Online Demo](http://kanaka.github.io/mal))
-* **Julia**
-* **Kotlin** - *created by [Javier Fernandez-Ivern](https://github.com/ivern)*
-* **LiveScript** - *created by [Jos van Bakel](https://github.com/c0deaddict)*
-* **Logo** - *created by [Dov Murik](https://github.com/dubek)*
-* **Lua**
-* **GNU Make**
-* **mal itself**
-* **Matlab** (GNU Octave and MATLAB)
-* **[miniMAL](https://github.com/kanaka/miniMAL)**
-* **NASM** - *created by [Ben Dudson](https://github.com/bendudson)*
-* **Nim** - *created by [Dennis Felsing](https://github.com/def-)*
-* **Object Pascal**
-* **Objective C**
-* **OCaml** - *created by [Chris Houser](https://github.com/chouser)*
-* **Perl**
-* **Perl 6** - *created by [Hinrik Örn Sigurðsson](https://github.com/hinrik)*
-* **PHP**
-* **Picolisp** - *created by [Vasilij Schneidermann](https://github.com/wasamasa)*
-* **PL/pgSQL** (Postgres)
-* **PL/SQL** (Oracle)
-* **Postscript**
-* **PowerShell**
-* **Python** (2.X and 3.X)
-* **RPython**
-* **R**
-* **Racket**
-* **Rexx** - *created by [Dov Murik](https://github.com/dubek)*
-* **Ruby**
-* **Rust**
-* **Scala**
-* **Scheme (R7RS)** - *created by [Vasilij Schneidermann](https://github.com/wasamasa)*
-* **Skew** - *created by [Dov Murik](https://github.com/dubek)*
-* **Swift** - *created by [Keith Rollin](https://github.com/keith-rollin)*
-* **Swift 3**
-* **Tcl** - *created by [Dov Murik](https://github.com/dubek)*
-* **TypeScript** - *created by [Masahiro Wakame](https://github.com/vvakame)*
-* **VHDL** - *created by [Dov Murik](https://github.com/dubek)*
-* **Vimscript** - *created by [Dov Murik](https://github.com/dubek)*
-* **Visual Basic.NET**
-* **WebAssembly** (wasm)
-* **Yorick** - *created by [Dov Murik](https://github.com/dubek)*
+| Language | Creator |
+| -------- | ------- |
+| [Ada](#ada) | [Chris Moore](https://github.com/zmower) |
+| [Ada #2](#ada2) | [Nicolas Boulenguez](https://github.com/asarhaddon) |
+| [GNU Awk](#gnu-awk) | [Miutsuru Kariya](https://github.com/kariya-mitsuru) |
+| [Bash 4](#bash-4) | [Joel Martin](https://github.com/kanaka)  |
+| [BASIC](#basic-c64-and-qbasic) (C64 &amp; QBasic) | [Joel Martin](https://github.com/kanaka) |
+| [C](#c) | [Joel Martin](https://github.com/kanaka)  |
+| [C++](#c-1) | [Stephen Thirlwall](https://github.com/sdt) |
+| [C#](#c-2) | [Joel Martin](https://github.com/kanaka)  |
+| [ChucK](#chuck) | [Vasilij Schneidermann](https://github.com/wasamasa) |
+| [Clojure](#clojure) (Clojure &amp; ClojureScript) | [Joel Martin](https://github.com/kanaka) |
+| [CoffeeScript](#coffeescript) | [Joel Martin](https://github.com/kanaka)  |
+| [Common Lisp](#common-lisp) | [Iqbal Ansari](https://github.com/iqbalansari) |
+| [Crystal](#crystal) | [Linda_pp](https://github.com/rhysd) |
+| [D](#d) | [Dov Murik](https://github.com/dubek) |
+| [Dart](#dart) | [Harry Terkelsen](https://github.com/hterkelsen) |
+| [Elixir](#elixir) | [Martin Ek](https://github.com/ekmartin) |
+| [Elm](#elm) | [Jos van Bakel](https://github.com/c0deaddict) |
+| [Emacs Lisp](#emacs-lisp) | [Vasilij Schneidermann](https://github.com/wasamasa) |
+| [Erlang](#erlang) | [Nathan Fiedler](https://github.com/nlfiedler) |
+| [ES6](#es6-ecmascript-2015) (ECMAScript 2015) | [Joel Martin](https://github.com/kanaka) |
+| [F#](#f) | [Peter Stephens](https://github.com/pstephens) |
+| [Factor](#factor) | [Jordan Lewis](https://github.com/jordanlewis) |
+| [Fantom](#fantom) | [Dov Murik](https://github.com/dubek) |
+| [Forth](#forth) | [Chris Houser](https://github.com/chouser) |
+| [GNU Guile](#gnu-guile-21) | [Mu Lei](https://github.com/NalaGinrut) |
+| [GNU Smalltalk](#gnu-smalltalk) | [Vasilij Schneidermann](https://github.com/wasamasa) |
+| [Go](#go) | [Joel Martin](https://github.com/kanaka)  |
+| [Groovy](#groovy) | [Joel Martin](https://github.com/kanaka)  |
+| [Haskell](#haskell) | [Joel Martin](https://github.com/kanaka)  |
+| [Haxe](#haxe-neko-python-c-and-javascript) (Neko, Python, C++, &amp; JS) | [Joel Martin](https://github.com/kanaka) |
+| [Hy](#hy) | [Joel Martin](https://github.com/kanaka)  |
+| [Io](#io) | [Dov Murik](https://github.com/dubek) |
+| [Java](#java-17) | [Joel Martin](https://github.com/kanaka)  |
+| [JavaScript](#javascriptnode) ([Demo](http://kanaka.github.io/mal)) | [Joel Martin](https://github.com/kanaka) |
+| [Julia](#julia) | [Joel Martin](https://github.com/kanaka)  |
+| [Kotlin](#kotlin) | [Javier Fernandez-Ivern](https://github.com/ivern) |
+| [LiveScript](#livescript) | [Jos van Bakel](https://github.com/c0deaddict) |
+| [Logo](#logo) | [Dov Murik](https://github.com/dubek) |
+| [Lua](#lua) | [Joel Martin](https://github.com/kanaka)  |
+| [GNU Make](#gnu-make-381) | [Joel Martin](https://github.com/kanaka)  |
+| [mal itself](#mal) | [Joel Martin](https://github.com/kanaka)  |
+| [MATLAB](#matlab-gnu-octave-and-matlab) (GNU Octave &amp; MATLAB) | [Joel Martin](https://github.com/kanaka) |
+| [miniMAL](#minimal) ([Repo](https://github.com/kanaka/miniMAL), [Demo](https://kanaka.github.io/miniMAL/)) | [Joel Martin](https://github.com/kanaka) |
+| [NASM](#nasm) | [Ben Dudson](https://github.com/bendudson) |
+| [Nim](#nim-0170) | [Dennis Felsing](https://github.com/def-) |
+| [Object Pascal](#object-pascal) | [Joel Martin](https://github.com/kanaka)  |
+| [Objective C](#objective-c) | [Joel Martin](https://github.com/kanaka)  |
+| [OCaml](#ocaml-4010) | [Chris Houser](https://github.com/chouser) |
+| [Perl](#perl-58) | [Joel Martin](https://github.com/kanaka)  |
+| [Perl 6](#perl-6) | [Hinrik Örn Sigurðsson](https://github.com/hinrik) |
+| [PHP](#php-53) | [Joel Martin](https://github.com/kanaka)  |
+| [Picolisp](#picolisp) | [Vasilij Schneidermann](https://github.com/wasamasa) |
+| [PL/pgSQL](#plpgsql-postgres-sql-procedural-language) (Postgres) | [Joel Martin](https://github.com/kanaka) |
+| [PL/SQL](#plsql-oracle-sql-procedural-language) (Oracle) | [Joel Martin](https://github.com/kanaka) |
+| [PostScript](#postscript-level-23) | [Joel Martin](https://github.com/kanaka)  |
+| [PowerShell](#powershell) | [Joel Martin](https://github.com/kanaka)  |
+| [Python](#python-2x-and-3x) (2.X &amp; 3.X) | [Joel Martin](https://github.com/kanaka) |
+| [RPython](#rpython) | [Joel Martin](https://github.com/kanaka)  |
+| [R](#r) | [Joel Martin](https://github.com/kanaka)  |
+| [Racket](#racket-53) | [Joel Martin](https://github.com/kanaka)  |
+| [Rexx](#rexx) | [Dov Murik](https://github.com/dubek) |
+| [Ruby](#ruby-19) | [Joel Martin](https://github.com/kanaka)  |
+| [Rust](#rust-100-nightly) | [Joel Martin](https://github.com/kanaka)  |
+| [Scala](#scala) | [Joel Martin](https://github.com/kanaka)  |
+| [Scheme (R7RS)](#scheme-r7rs) | [Vasilij Schneidermann](https://github.com/wasamasa) |
+| [Skew](#skew) | [Dov Murik](https://github.com/dubek) |
+| [Swift 2](#swift) | [Keith Rollin](https://github.com/keith-rollin) |
+| [Swift 3](#swift-3) | [Joel Martin](https://github.com/kanaka)  |
+| [Swift 4](#swift-4) | [陆遥](https://github.com/LispLY)  |
+| [Tcl](#tcl-86) | [Dov Murik](https://github.com/dubek) |
+| [TypeScript](#typescript) | [Masahiro Wakame](https://github.com/vvakame) |
+| [VHDL](#vhdl) | [Dov Murik](https://github.com/dubek) |
+| [Vimscript](#vimscript) | [Dov Murik](https://github.com/dubek) |
+| [Visual Basic.NET](#visual-basicnet) | [Joel Martin](https://github.com/kanaka)  |
+| [WebAssembly](#webassembly-wasm) (wasm) | [Joel Martin](https://github.com/kanaka) |
+| [Yorick](#yorick) | [Dov Murik](https://github.com/dubek) |
 
 
 **3. Mal is a learning tool**
@@ -160,6 +164,17 @@ The Ada implementation was developed with GNAT 4.9 on debian. It also
 compiles unchanged on windows if you have windows versions of git,
 GNAT and (optionally) make.  There are no external dependencies
 (readline not implemented).
+
+```
+cd ada
+make
+./stepX_YYY
+```
+
+### Ada.2
+
+The second Ada implementation was developed with GNAT 8 and links with
+the GNU readline library.
 
 ```
 cd ada
@@ -260,19 +275,6 @@ cd chuck
 ./run
 ```
 
-### Common Lisp
-
-The implementation has been tested with SBCL, CCL, CMUCL, GNU CLISP, ECL and
-Allegro CL on Ubuntu 16.04 and Ubuntu 12.04, see
-the [README](common-lisp/README.org) for more details. Provided you have the
-dependencies mentioned installed, do the following to run the implementation
-
-```
-cd common-lisp
-make
-./run
-```
-
 ### Clojure
 
 For the most part the Clojure implementation requires Clojure 1.5,
@@ -289,6 +291,19 @@ lein with-profile +stepX trampoline run
 sudo npm install -g coffee-script
 cd coffee
 coffee ./stepX_YYY
+```
+
+### Common Lisp
+
+The implementation has been tested with SBCL, CCL, CMUCL, GNU CLISP, ECL and
+Allegro CL on Ubuntu 16.04 and Ubuntu 12.04, see
+the [README](common-lisp/README.org) for more details. Provided you have the
+dependencies mentioned installed, do the following to run the implementation
+
+```
+cd common-lisp
+make
+./run
 ```
 
 ### Crystal
@@ -371,11 +386,11 @@ MAL_STEP=stepX_YYY rebar compile escriptize # build individual step
 ./stepX_YYY
 ```
 
-### ES6 (ECMAScript 6 / ECMAScript 2015)
+### ES6 (ECMAScript 2015)
 
-The ES6 implementation uses the [babel](https://babeljs.io) compiler
-to generate ES5 compatible JavaScript. The generated code has been
-tested with Node 0.12.4.
+The ES6 / ECMAScript 2015 implementation uses the
+[babel](https://babeljs.io) compiler to generate ES5 compatible
+JavaScript. The generated code has been tested with Node 0.12.4.
 
 ```
 cd es6
@@ -424,6 +439,22 @@ cd forth
 gforth stepX_YYY.fs
 ```
 
+### GNU Guile 2.1+
+
+```
+cd guile
+guile -L ./ stepX_YYY.scm
+```
+
+### GNU Smalltalk
+
+The Smalltalk implementation of mal has been tested with GNU Smalltalk 3.2.91.
+
+```
+cd gnu-smalltalk
+./run
+```
+
 ### Go
 
 The Go implementation of mal requires that go is installed on on the
@@ -445,22 +476,6 @@ tested with Groovy 1.8.6.
 cd groovy
 make
 groovy ./stepX_YYY.groovy
-```
-
-### GNU Guile 2.1+
-
-```
-cd guile
-guile -L ./ stepX_YYY.scm
-```
-
-### GNU Smalltalk
-
-The Smalltalk implementation of mal has been tested with GNU Smalltalk 3.2.91.
-
-```
-cd gnu-smalltalk
-./run
 ```
 
 ### Haskell
@@ -657,7 +672,7 @@ make
 ./stepX_YYY
 ```
 
-### MatLab (GNU Octave and MATLAB)
+### MATLAB (GNU Octave and MATLAB)
 
 The MatLab implementation has been tested with GNU Octave 4.2.1.
 It has also been tested with MATLAB version R2014a on Linux. Note that
@@ -928,6 +943,17 @@ make
 ./stepX_YYY
 ```
 
+### Swift 4
+
+The Swift 4 implementation of mal requires the Swift 4.0 compiler. It
+has been tested with Swift 4.2.3 release.
+
+```
+cd swift4
+make
+./stepX_YYY
+```
+
 ### Tcl 8.6
 
 The Tcl implementation of mal requires Tcl 8.6 to run.  For readline line
@@ -1194,9 +1220,10 @@ The following implementations are maintained as separate projects:
 * [by vi](https://github.com/vi/mal-rust-vi) - using [Pest](https://pest.rs/) grammar, not using typical Mal infrastructure (cargo-ized steps and built-in converted tests).
 
 
-## Projects using mal
+## Other mal Projects
 
  * [malc](https://github.com/dubek/malc) - Mal (Make A Lisp) compiler. Compiles a Mal program to LLVM assembly language, then binary.
+ * [malcc](https://git.sr.ht/~tim/malcc) (@seven1m) - malcc is an incremental compiler implementation for the Mal language. It uses the Tiny C Compiler as the compiler backend and has full support for the Mal language, including macros, tail-call elimination, and even run-time eval. ["I Built a Lisp Compiler"](https://mpov.timmorgan.org/i-built-a-lisp-compiler/) post about the process.
  * [frock](https://github.com/chr15m/frock) - Clojure-flavoured PHP. Uses mal/php to run programs.
 
 ## License
