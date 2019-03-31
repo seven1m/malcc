@@ -25,7 +25,15 @@ malcc has been tested on Ubuntu 18.04 and macOS 10.14 Mojave.
 **Prerequisites on Mac:**
 
 ```bash
+sudo xcode-select --install
 brew install pcre libgc
+```
+
+On Macos 10.14.4, there is a problem building TinyCC. This fixes that:
+
+```bash
+cd /usr/local/lib
+sudo ln -s ../../lib/libSystem.B.dylib libgcc_s.10.4.dylib
 ```
 
 **Prerequisites on Ubuntu/Debian:**
