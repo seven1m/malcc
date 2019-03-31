@@ -1,6 +1,6 @@
 # malcc
 
-Mal (Make A Lisp) C Compiler
+Mal (Make A Lisp) Compiler in C
 
 [![build status](https://builds.sr.ht/~tim/malcc.svg)](https://builds.sr.ht/~tim/malcc)
 
