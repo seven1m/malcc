@@ -140,7 +140,7 @@ void mal_string_append_mal_string(MalType *val, MalType *str);
 void mal_string_append_char(MalType *val, char c);
 void mal_string_append_long_long(MalType *val, long long n);
 MalType* mal_string_replace(MalType *val, char *find, char *replace);
-char* mal_string_substring(MalType *orig, size_t start, size_t len);
+MalType* mal_string_replace_all(MalType *orig, char *find, char *replace);
 MalType* mal_string_to_list(MalType *orig);
 
 MalType* mal_keyword(char *name);
