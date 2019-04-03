@@ -56,6 +56,15 @@ char* string(char *str) {
   return copy;
 }
 
+char* substring(char *orig, size_t start, size_t len) {
+  size_t orig_len = strlen(orig);
+  assert(start < orig_len);
+  assert(start + len <= orig_len);
+  char *buffer = GC_MALLOC(len + 1);
+  snprintf(buffer, len + 1, "%s", orig + start);
+  return buffer;
+}
+
 MalType* program_arguments_as_vector(int argc, char *argv[]) {
   MalType *arg_vec = mal_vector();
   for (int i=1; i<argc; i++) {

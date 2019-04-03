@@ -179,20 +179,30 @@ MalType* mal_string_replace(MalType *orig, char *find, char *replace) {
   assert(pos);
   size_t index = pos - orig->str;
   size_t find_len = strlen(find);
-  char *before = mal_string_substring(orig, 0, index);
-  char *after = mal_string_substring(orig, index + find_len, orig->str_len - (index + find_len));
+  char *before = substring(orig->str, 0, index);
+  char *after = substring(orig->str, index + find_len, orig->str_len - (index + find_len));
   MalType *final = mal_string(before);
   mal_string_append(final, replace);
   mal_string_append(final, after);
+  assert(strlen(final->str) == final->str_len);
   return final;
 }
 
-char* mal_string_substring(MalType *orig, size_t start, size_t len) {
-  assert(start < orig->str_len);
-  assert(start + len <= orig->str_len);
-  char *buffer = GC_MALLOC(len + 1);
-  snprintf(buffer, len + 1, "%s", orig->str + start);
-  return buffer;
+MalType* mal_string_replace_all(MalType *orig, char *find, char *replace) {
+  MalType *final = mal_string("");
+  char *pos = NULL;
+  char *str = orig->str, *before;
+  size_t find_len = strlen(find);
+  while ((pos = strstr(str, find))) {
+    size_t index = pos - str;
+    before = substring(str, 0, index);
+    mal_string_append(final, before);
+    mal_string_append(final, replace);
+    str = str + index + find_len;
+  }
+  mal_string_append(final, str);
+  assert(strlen(final->str) == final->str_len);
+  return final;
 }
 
 MalType* mal_string_to_list(MalType *orig) {
