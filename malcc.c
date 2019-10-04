@@ -65,6 +65,7 @@ int gen_list_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int
 int gen_load_file(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var_num);
 int gen_number_code(MalType *node, struct codegen *code, int ret);
 int gen_string_code(MalType *node, struct codegen *code, int ret);
+int gen_regex_code(MalType *node, struct codegen *code, int ret);
 int gen_symbol_code(MalType *node, struct codegen *code, int ret);
 int gen_symbol_lookup_code(MalType *node, MalEnv *env, struct codegen *code, int ret);
 int gen_try_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var_num);
@@ -229,6 +230,8 @@ int gen_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var
       return gen_number_code(node, code, ret);
     case MAL_STRING_TYPE:
       return gen_string_code(node, code, ret);
+    case MAL_REGEX_TYPE:
+      return gen_regex_code(node, code, ret);
     case MAL_SYMBOL_TYPE:
       if (quoting) {
         return gen_symbol_code(node, code, ret);
@@ -312,6 +315,8 @@ int gen_call_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int
     } else if (strcmp(sym->symbol, "load-file") == 0) {
       return gen_load_file(mal_car(mal_cdr(node)), env, code, ret, var_num);
     }
+  } else if (is_regex(sym)) {
+    return gen_call_code(mal_cons(mal_symbol("regex-match"), node), env, code, ret, var_num);
   }
 
   // look up the lambda in the env
@@ -720,6 +725,13 @@ int gen_number_code(MalType *node, struct codegen *code, int ret) {
 
 int gen_string_code(MalType *node, struct codegen *code, int ret) {
   MalType *temp_code = mal_sprintf("mal_string(%s)", pr_str(node, 1));
+  append_code(code->body, temp_code, ret);
+  return 1;
+}
+
+int gen_regex_code(MalType *node, struct codegen *code, int ret) {
+  MalType *str = mal_string(node->regex);
+  MalType *temp_code = mal_sprintf("mal_regex(%s)", pr_str(str, 1));
   append_code(code->body, temp_code, ret);
   return 1;
 }

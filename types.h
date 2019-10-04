@@ -27,6 +27,7 @@ enum MalTypeType {
   MAL_VECTOR_TYPE,
   MAL_HASHMAP_TYPE,
   MAL_STRING_TYPE,
+  MAL_REGEX_TYPE,
   MAL_LAMBDA_TYPE,
   MAL_CONTINUATION_TYPE,
   MAL_ATOM_TYPE,
@@ -65,6 +66,12 @@ struct MalType {
       char *str;
     };
 
+    // MAL_REGEX_TYPE
+    struct {
+      size_t regex_len;
+      char *regex;
+    };
+
     // MAL_LAMBDA_TYPE, MAL_CONTINUATION_TYPE
     struct {
       MalType* (*fn)(MalEnv *env, size_t argc, MalType **args);
@@ -86,7 +93,8 @@ struct MalType {
                            (val)->type == MAL_KEYWORD_TYPE || \
                            (val)->type == MAL_NUMBER_TYPE || \
                            (val)->type == MAL_SYMBOL_TYPE || \
-                           (val)->type == MAL_STRING_TYPE)
+                           (val)->type == MAL_STRING_TYPE || \
+                           (val)->type == MAL_REGEX_TYPE)
 
 MalType* mal_alloc();
 
@@ -142,6 +150,9 @@ void mal_string_append_long_long(MalType *val, long long n);
 MalType* mal_string_replace(MalType *val, char *find, char *replace);
 MalType* mal_string_replace_all(MalType *orig, char *find, char *replace);
 MalType* mal_string_to_list(MalType *orig);
+
+MalType* mal_regex(char *str);
+#define is_regex(val) ((val)->type == MAL_REGEX_TYPE)
 
 MalType* mal_keyword(char *name);
 #define is_keyword(val) ((val)->type == MAL_KEYWORD_TYPE)

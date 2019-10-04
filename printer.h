@@ -12,5 +12,6 @@ char* pr_list(MalType *val, int print_readably);
 char* pr_vector(MalType *val, int print_readably);
 char* pr_hashmap(MalType *val, int print_readably);
 char* pr_string(MalType *val, int print_readably);
+char* pr_regex(MalType *val, int print_readably);
 
 #endif

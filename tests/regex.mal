@@ -1,0 +1,49 @@
+;;;
+;;; Supplemental malcc test for regex support
+;;;
+
+;; Testing that the reader understands regex literals
+/regex/
+;=>/regex/
+/escaped \/ slash/
+;=>/escaped \/ slash/
+(regex? /foo/)
+;=>true
+(regex? / foo /)
+;=>true
+(regex? "foo")
+;=>false
+(regex? /)
+;=>false
+
+;; Not to be confused with the division function
+/
+;=><lambda>
+(/ 6 2)
+;=>3
+(/ 6 (/ 4 2))
+;=>3
+(/ 6 (/ 4 (/ 2 1)))
+;=>3
+
+;; Testing that matching works
+(regex-match /foo/ "foo")
+;=>0
+(regex-match /foo/ "foofoo")
+;=>0
+(regex-match /bar/ "foobar")
+;=>3
+(regex-match /foo/ "foobar")
+;=>0
+(regex-match /^foo/ "foobar")
+;=>0
+(regex-match /^foo$/ "foobar")
+;=>nil
+(regex-match /foo/ "bar")
+;=>nil
+
+;; Testing that regex is callable (calls regex-match under the hood)
+(/foo/ "foo")
+;=>0
+(/foo/ "bar")
+;=>nil

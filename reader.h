@@ -17,7 +17,7 @@ char* reader_next(Reader* reader);
 
 char* reader_peek(Reader* reader);
 
-static const char PATTERN[] = "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)";
+static const char PATTERN[] = "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|/(?:\\\\.|[^\\\\/])*/|;.*|[^\\s\\[\\]{}('\"`,;)]*)";
 
 Token* tokenize(char* code);
 
@@ -30,6 +30,7 @@ MalType* read_list(Reader* reader);
 MalType* read_vector(Reader* reader);
 MalType* read_hashmap(Reader *reader);
 MalType* read_string(Reader *reader);
+MalType* read_regex(Reader *reader);
 char unescape_char(char *token, size_t *i, size_t len);
 MalType* read_atom(Reader* reader);
 

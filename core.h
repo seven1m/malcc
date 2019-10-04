@@ -67,6 +67,8 @@ MalType* core_is_string(MalEnv *env, size_t argc, MalType **args);
 MalType* core_is_number(MalEnv *env, size_t argc, MalType **args);
 MalType* core_is_fn(MalEnv *env, size_t argc, MalType **args);
 MalType* core_is_macro(MalEnv *env, size_t argc, MalType **args);
+MalType* core_is_regex(MalEnv *env, size_t argc, MalType **args);
+MalType* core_regex_match(MalEnv *env, size_t argc, MalType **args);
 void add_core_ns_to_env(MalEnv *env);
 
 #endif

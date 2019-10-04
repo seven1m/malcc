@@ -102,6 +102,7 @@ test-self-hosted: all
 
 test-supplemental: all
 	$(RUN_TEST_CMD) --test-timeout 30 ../../tests/utf-8.mal ../../malcc
+	$(RUN_TEST_CMD) --test-timeout 30 ../../tests/regex.mal ../../malcc
 
 test-mal-in-mal: mal-in-mal
 	$(RUN_TEST_CMD) --test-timeout 30 step2_eval.mal ../../mal-in-mal

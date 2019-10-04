@@ -240,6 +240,16 @@ MalType* mal_string_to_list(MalType *orig) {
   return mal_vector_to_list(vec);
 }
 
+MalType* mal_regex(char *str) {
+  MalType *val = mal_alloc();
+  size_t len = strlen(str);
+  val->type = MAL_REGEX_TYPE;
+  val->regex_len = len;
+  val->regex = GC_MALLOC(len + 1);
+  snprintf(val->regex, len + 1, "%s", str);
+  return val;
+}
+
 #define VECTOR_INIT_SIZE 10
 #define VECTOR_GROW_FACTOR 2
 

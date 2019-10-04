@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <gc.h>
+#include <pcre.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -76,6 +77,8 @@ struct hashmap* core_ns() {
   hashmap_put(ns, "number?", core_is_number);
   hashmap_put(ns, "fn?", core_is_fn);
   hashmap_put(ns, "macro?", core_is_macro);
+  hashmap_put(ns, "regex?", core_is_regex);
+  hashmap_put(ns, "regex-match", core_regex_match);
   return ns;
 }
 
@@ -755,6 +758,41 @@ MalType* core_is_macro(MalEnv *env, size_t argc, MalType **args) {
   mal_assert(argc == 1, "Expected 1 argument to macro?");
   MalType *val = args[0];
   return is_macro(val) ? mal_true() : mal_false();
+}
+
+MalType* core_is_regex(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 1, "Expected 1 argument to regex?");
+  MalType *val = args[0];
+  return is_regex(val) ? mal_true() : mal_false();
+}
+
+MalType* core_regex_match(MalEnv *env, size_t argc, MalType **args) {
+  UNUSED(env);
+  mal_assert(argc == 2, "Expected 2 argument to regex-match");
+  MalType *regex = args[0];
+  mal_assert(is_regex(regex), "Expected first argument to regex-match to be a regex");
+  MalType *str = args[1];
+  mal_assert(is_string(str), "Expected second argument to regex-match to be a string");
+
+  const char *pcreErrorStr;
+  int pcreErrorOffset;
+  pcre *reCompiled = pcre_compile(regex->regex, 0, &pcreErrorStr, &pcreErrorOffset, NULL);
+  if(reCompiled == NULL) {
+    return mal_error(mal_string("Could not compile regex."));
+  }
+
+  pcre_extra *pcreExtra = pcre_study(reCompiled, PCRE_EXTENDED, &pcreErrorStr);
+  if(pcreErrorStr != NULL) {
+    return mal_error(mal_string("Could not study regex."));
+  }
+
+  int subStrVec[30];
+  int pcreExecRet = pcre_exec(reCompiled, pcreExtra, str->str, str->str_len, 0, 0, subStrVec, 30);
+
+  pcre_free(reCompiled);
+
+  return pcreExecRet < 0 ? mal_nil() : mal_number(subStrVec[0]);
 }
 
 void add_core_ns_to_env(MalEnv *env) {

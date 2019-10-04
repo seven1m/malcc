@@ -43,6 +43,8 @@ char* pr_str(MalType *val, int print_readably) {
       return string("nil");
     case MAL_NUMBER_TYPE:
       return long_long_to_string(val->number);
+    case MAL_REGEX_TYPE:
+      return pr_regex(val, print_readably);
     case MAL_STRING_TYPE:
       return pr_string(val, print_readably);
     case MAL_SYMBOL_TYPE:
@@ -148,6 +150,37 @@ char* pr_string(MalType *val, int print_readably) {
     size_t len = val->str_len + 1;
     char *str = GC_MALLOC(len);
     snprintf(str, len, "%s", val->str);
+    return str;
+  }
+}
+
+char* pr_regex(MalType *val, int print_readably) {
+  assert(strlen(val->regex) == val->regex_len);
+  if (print_readably) {
+    size_t len = val->regex_len;
+    char *orig = val->regex;
+    MalType *repr = mal_string("/");
+    for (size_t i=0; i<len; i++) {
+      switch (orig[i]) {
+        case '\n':
+          mal_string_append(repr, "\\n");
+          break;
+        case '/':
+          mal_string_append(repr, "\\/");
+          break;
+        case '\\':
+          mal_string_append(repr, "\\\\");
+          break;
+        default:
+          mal_string_append_char(repr, orig[i]);
+      }
+    }
+    mal_string_append_char(repr, '/');
+    return repr->str;
+  } else {
+    size_t len = val->regex_len + 1;
+    char *str = GC_MALLOC(len);
+    snprintf(str, len, "%s", val->regex);
     return str;
   }
 }

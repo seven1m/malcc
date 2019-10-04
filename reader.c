@@ -115,7 +115,8 @@ MalType* read_str(char* code) {
 
 MalType* read_form(Reader* reader) {
   char *token = reader_peek(reader);
-  if (!token || strlen(token) == 0) {
+  size_t len = strlen(token);
+  if (!token || len == 0) {
     return mal_nil();
   } else {
     switch (*token) {
@@ -130,6 +131,12 @@ MalType* read_form(Reader* reader) {
         return read_hashmap(reader);
       case '"':
         return read_string(reader);
+      case '/':
+        if (len == 1) {
+          return read_atom(reader);
+        } else {
+          return read_regex(reader);
+        }
       case ':':
         return read_keyword(reader);
       case '\'':
@@ -271,6 +278,58 @@ char unescape_char(char *token, size_t *i, size_t len) {
   } else {
     return c;
   }
+}
+
+MalType* read_regex(Reader *reader) {
+  char *token = reader_next(reader);
+  size_t len = strlen(token);
+  char *str = GC_MALLOC(len + 1);
+  size_t index = 0;
+  int saw_slashes = 0;
+  int saw_lparens = 0;
+  int saw_rparens = 0;
+  char unescaped;
+  for (size_t i=0; i<len; i++) {
+    switch (token[i]) {
+      case '/':
+        saw_slashes++;
+        break;
+      case '(':
+        saw_lparens++;
+        break;
+      case ')':
+        saw_rparens++;
+        break;
+      case '\\':
+        i++;
+        unescaped = unescape_char(token, &i, len - 1); // note: len-1 because of closing quote
+        if (unescaped) {
+          str[index++] = unescaped;
+          break;
+        } else {
+          return mal_error(mal_string("Invalid escape sequence in regex"));
+        }
+      default:
+        str[index++] = token[i];
+    }
+  }
+  str[index] = 0;
+  if (saw_slashes != 2) {
+    printf("EOF\n");
+  }
+  if (saw_lparens != saw_rparens) {
+    // Oops, this doesn't look like a regex afterall! Let's break it apart into more tokens...
+    char* token_string = token;
+    Token* token = GC_MALLOC(sizeof(Token));
+    token->str = string("/");
+    token->next = tokenize(token_string+1); // skip the first character
+    Token* last = token->next;
+    while (last->next) last = last->next; // find the last token in the newly tokenized list
+    last->next = reader->token; // append our existing list on the end of it
+    reader->token = token; // point the reader at our newly prepended list of tokens
+    return read_atom(reader);
+  }
+  return mal_regex(str);
 }
 
 MalType* read_list(Reader *reader) {
