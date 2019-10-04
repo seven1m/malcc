@@ -2,8 +2,6 @@
 
 Mal (Make A Lisp) Compiler in C
 
-[![build status](https://builds.sr.ht/~tim/malcc.svg)](https://builds.sr.ht/~tim/malcc)
-
 ## Overview
 
 [Mal](https://github.com/kanaka/mal) is Clojure inspired Lisp interpreter
@@ -126,7 +124,10 @@ implementations:
 
 ## Contributing
 
-Send patches/bug reports to [~tim/public-inbox@lists.sr.ht](mailto:~tim/public-inbox@lists.sr.ht).
+Contributors are welcome! ❤️
+
+File an issue on [GitHub](https://github.com/seven1m/malcc/issues) if you find
+a bug or you want to propose a new feature!
 
 ## License
 
