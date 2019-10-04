@@ -2,7 +2,7 @@
 
 Mal (Make A Lisp) Compiler in C
 
-![](https://github.com/seven1m/malcc/workflows/Build/badge.svg)
+[![](https://github.com/seven1m/malcc/workflows/Build/badge.svg)](https://github.com/seven1m/malcc/actions?workflow=Build)
 
 ## Overview
 
