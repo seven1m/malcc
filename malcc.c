@@ -170,6 +170,7 @@ int compile_eval(MalType *ast, MalEnv *env, int *var_num, MalType* (**EVAL)(MalE
   tcc_add_symbol(s, "mal_keyword", mal_keyword);
   tcc_add_symbol(s, "mal_nil", mal_nil);
   tcc_add_symbol(s, "mal_number", mal_number);
+  tcc_add_symbol(s, "mal_regex", mal_regex);
   tcc_add_symbol(s, "mal_sprintf", mal_sprintf);
   tcc_add_symbol(s, "mal_string", mal_string);
   tcc_add_symbol(s, "mal_symbol", mal_symbol);
