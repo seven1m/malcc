@@ -2,6 +2,8 @@
 
 Mal (Make A Lisp) Compiler in C
 
+![](https://github.com/seven1m/malcc/workflows/build/badge.svg)
+
 ## Overview
 
 [Mal](https://github.com/kanaka/mal) is Clojure inspired Lisp interpreter
