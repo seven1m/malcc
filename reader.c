@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <ctype.h>
 #include <gc.h>
 #include <pcre.h>
@@ -130,7 +131,11 @@ MalType* read_form(Reader* reader) {
       case '{':
         return read_hashmap(reader);
       case '"':
-        return read_string(reader);
+        if (len >= 3 && *(token+1) == '"' && *(token+2) == '"') {
+          return read_triple_quoted_string(reader);
+        } else {
+          return read_string(reader);
+        }
       case '/':
         if (len == 1) {
           return read_atom(reader);
@@ -257,6 +262,16 @@ MalType* read_string(Reader *reader) {
     printf("EOF\n");
   }
   return mal_string(str);
+}
+
+MalType* read_triple_quoted_string(Reader *reader) {
+  char *token = reader_next(reader);
+  size_t len = strlen(token);
+  assert(len >= 6);
+  MalType *str = mal_string(token+3); // chop off first 3 quotes
+  str->str_len = str->str_len - 3;
+  str->str[str->str_len] = 0; // chop off last 3 quotes
+  return str;
 }
 
 char unescape_char(char *token, size_t *i, size_t len) {

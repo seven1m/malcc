@@ -1,0 +1,17 @@
+;;;
+;;; Supplemental malcc test for triple-quoted-string
+;;;
+
+(prn """
+hello world
+"stuff"
+line 2
+""")
+
+(def! s1 """
+  here is a string
+""")
+
+(def! s2 "simple")
+
+(prn s1)
