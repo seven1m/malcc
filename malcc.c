@@ -562,13 +562,22 @@ int gen_fn_code(MalType *fn_name, MalType *node, MalEnv *env, struct codegen *co
 int gen_c_fn_code(MalType *ast, MalEnv *env, struct codegen *code, int ret, int *var_num) {
   UNUSED(env);
   if (!is_cons(ast)) {
-    printf("Expected one argument to c-fn*.\n");
+    printf("Expected at least one argument to c-fn*.\n");
     return 0;
   }
   MalType *body = mal_car(ast);
   if (!is_string(body)) {
-    printf("Expected the only argument to c-fn* to be a string.\n");
+    printf("Expected the first argument to c-fn* to be a string.\n");
     return 0;
+  }
+  MalType *top;
+  if (is_cons(mal_cdr(ast))) {
+    top = mal_car(mal_cdr(ast));
+    if (!is_string(top)) {
+      printf("Expected the second argument to c-fn* to be a string.\n");
+      return 0;
+    }
+    append_code(code->top, top, 0);
   }
   MalType *fn_name = next_var_name("fn", var_num);
   MalType *fn = mal_sprintf("MalType* %S(MalEnv *env, size_t argc, MalType **args) {\n%S\n}\n\n", fn_name, body);

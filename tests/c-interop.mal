@@ -2,6 +2,7 @@
 ;;; Supplemental malcc test for C interop
 ;;;
 
+;; Testing c-fn* builtin
 ((c-fn* """return mal_string("hello world");""")))
 ;=>"hello world"
 (def! c-hello (c-fn* """return mal_string("hello world");"""))
@@ -21,8 +22,12 @@
 (arg-first "a")
 ;=>"a"
 
+;; Testing with additional top-level code
+((c-fn* "return mal_string((char*)HELLO);" "const char HELLO[] = \"hello world\";"))
+;=>"hello world"
+
 ;; Testing bad input
 (c-fn* 1)
-;/.*Expected the only argument to c-fn\* to be a string\..*
+;/.*Expected the first argument to c-fn\* to be a string\..*
 (c-fn*)
-;/.*Expected one argument to c-fn\*\..*
+;/.*Expected at least one argument to c-fn\*\..*
