@@ -1,0 +1,28 @@
+;;;
+;;; Supplemental malcc test for C interop
+;;;
+
+((c-fn* """return mal_string("hello world");""")))
+;=>"hello world"
+(def! c-hello (c-fn* """return mal_string("hello world");"""))
+;=><lambda>
+(c-hello)
+;=>"hello world"
+(def! arg-count (c-fn* "return mal_number(argc);"))
+;=><lambda>
+(arg-count)
+;=>0
+(arg-count "a" "b" "c")
+;=>3
+(def! arg-first (c-fn* "if (argc > 0) {\nreturn args[0];\n} else {\nreturn mal_nil();\n}"))
+;=><lambda>
+(arg-first)
+;=>nil
+(arg-first "a")
+;=>"a"
+
+;; Testing bad input
+(c-fn* 1)
+;/.*Expected the only argument to c-fn\* to be a string\..*
+(c-fn*)
+;/.*Expected one argument to c-fn\*\..*

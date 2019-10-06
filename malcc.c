@@ -56,6 +56,7 @@ int gen_continuation_code(char *prefix, MalType *node, MalEnv *env, struct codeg
 int gen_def_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var_num);
 int gen_do_code(MalType *list, MalEnv *env, struct codegen *code, int ret, int *var_num);
 int gen_fn_code(MalType *fn_name, MalType *node, MalEnv *env, struct codegen *code, int *var_num, int new_env);
+int gen_c_fn_code(MalType *ast, MalEnv *env, struct codegen *code, int ret, int *var_num);
 int gen_hashmap_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var_num);
 int gen_if_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int *var_num);
 int gen_keyword_code(MalType *node, struct codegen *code, int ret);
@@ -158,6 +159,7 @@ int compile_eval(MalType *ast, MalEnv *env, int *var_num, MalType* (**EVAL)(MalE
   tcc_add_symbol(s, "env_get", env_get);
   tcc_add_symbol(s, "env_set", env_set);
   tcc_add_symbol(s, "mal_blank_line", mal_blank_line);
+  tcc_add_symbol(s, "mal_builtin_function", mal_builtin_function);
   tcc_add_symbol(s, "mal_closure", mal_closure);
   tcc_add_symbol(s, "mal_continuation", mal_continuation);
   tcc_add_symbol(s, "mal_continuation_0", mal_continuation_0);
@@ -300,6 +302,9 @@ int gen_call_code(MalType *node, MalEnv *env, struct codegen *code, int ret, int
         return 0;
       }
       return gen_closure_code(fn_name, env, code, ret);
+    } else if (strcmp(sym->symbol, "c-fn*") == 0) {
+      fn_name = next_var_name("fn", var_num);
+      return gen_c_fn_code(mal_cdr(node), env, code, ret, var_num);
     } else if (strcmp(sym->symbol, "quote") == 0) {
       return gen_code(mal_car(mal_cdr(node)), env, code, ret, var_num, 1);
     } else if (strcmp(sym->symbol, "quasiquote") == 0) {
@@ -551,6 +556,24 @@ int gen_fn_code(MalType *fn_name, MalType *node, MalEnv *env, struct codegen *co
   mal_string_append(temp_fn, "\n}\n\n");
   append_code(code->top, temp_fn, 0);
 
+  return 1;
+}
+
+int gen_c_fn_code(MalType *ast, MalEnv *env, struct codegen *code, int ret, int *var_num) {
+  UNUSED(env);
+  if (!is_cons(ast)) {
+    printf("Expected one argument to c-fn*.\n");
+    return 0;
+  }
+  MalType *body = mal_car(ast);
+  if (!is_string(body)) {
+    printf("Expected the only argument to c-fn* to be a string.\n");
+    return 0;
+  }
+  MalType *fn_name = next_var_name("fn", var_num);
+  MalType *fn = mal_sprintf("MalType* %S(MalEnv *env, size_t argc, MalType **args) {\n%S\n}\n\n", fn_name, body);
+  append_code(code->top, fn, 0);
+  append_code(code->body, mal_sprintf("mal_builtin_function(%S, \"%S\", %S)", fn_name, fn_name, build_env_name(env)), ret);
   return 1;
 }
 

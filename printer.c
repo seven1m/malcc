@@ -58,7 +58,7 @@ char* pr_str(MalType *val, int print_readably) {
       assert(0);
     default:
       printf("I don't know how to print this type: %d\n", val->type);
-      exit(1);
+      assert(0);
   }
 }
 
