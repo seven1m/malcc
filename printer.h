@@ -4,7 +4,7 @@
 #include "hashmap.h"
 #include "types.h"
 
-char *BLANK_LINE;
+extern char *BLANK_LINE;
 
 char* pr_atom(MalType *val, int print_readably);
 char* pr_str(MalType *val, int print_readably);
